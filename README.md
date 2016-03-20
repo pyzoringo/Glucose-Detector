@@ -10,6 +10,8 @@ Since the problem was mainly about the photodiode, we instead used simple RC cir
 Please read through FinalReport.pdf for detailed info.  
 _12_08_2014.info is the code uploaded to Arduino.
 
+Full history was stored elsewhere. Here're final for SeniorDesign.  
+
 3/19/2016
 I decided to restart this project, I saw a thread about using an external ADC attached to Arduino.  
 In this way, I don't have to mess with accessing ATMEGA chip. 
