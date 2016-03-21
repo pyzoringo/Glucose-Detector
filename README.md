@@ -21,4 +21,7 @@ Full history was stored elsewhere. Here're final for SeniorDesign.
 
 3/19/2016
 I decided to restart this project, I saw a thread about using an external ADC attached to Arduino.  
-In this way, I don't have to mess with accessing ATMEGA chip. 
+In this way, I don't have to mess with accessing ATMEGA chip.   
+
+3/21/2016  
+Received LCD screen module from adafruit, unfortunately, I need to solder it up myself.  
