@@ -1,5 +1,12 @@
 # Glucose-Detector
 Senior design concept. Couldn't carry out a working prototype due to limited resources. Still seeking out solution  
+Goal: utilize oxygen-Ruthenium quenching decay to convert light decay signal into glucose concentration.  
+Hardware:  
+1. Arduino Leonardo  
+2. LCD screen  
+3. glucose enzyme coated ruthenium probe  
+4. avalaunche photodiode
+
 Arduino ADC rate was insufficient for micro-second level.  
 My partner(Tian) and I found a way to bypass the Arduino library, so that we could access the ATMEGA chip directly.  
 We changed some parameter to make the AD conversion at the fastest possible speed (13us, surely, precision was conpromised).  
