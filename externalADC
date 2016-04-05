@@ -1,0 +1,121 @@
+//This code are from http://playground.arduino.cc/Code/MCP3208  
+//The problem is that it set Pin13 as clock, and manually run the clock by constantly writing HIGH/LOW to this pin.  
+//Found a solution here @ http://forum.arduino.cc/index.php/topic,65434.0.html  
+//The code with the right way to setup the clock is attached at bottom  
+
+define SELPIN 10 //Selection Pin 
+#define DATAOUT 11//MOSI 
+#define DATAIN  12//MISO 
+#define SPICLOCK  13//Clock 
+int readvalue; 
+
+void setup(){ 
+ //set pin modes 
+ pinMode(SELPIN, OUTPUT); 
+ pinMode(DATAOUT, OUTPUT); 
+ pinMode(DATAIN, INPUT); 
+ pinMode(SPICLOCK, OUTPUT); 
+ //disable device to start with 
+ digitalWrite(SELPIN,HIGH); 
+ digitalWrite(DATAOUT,LOW); 
+ digitalWrite(SPICLOCK,LOW); 
+
+ Serial.begin(9600); 
+} 
+
+int read_adc(int channel){
+  int adcvalue = 0;
+  byte commandbits = B11000000; //command bits - start, mode, chn (3), dont care (3)
+
+  //allow channel selection
+  commandbits|=((channel-1)<<3);
+
+  digitalWrite(SELPIN,LOW); //Select adc
+  // setup bits to be written
+  for (int i=7; i>=3; i--){
+    digitalWrite(DATAOUT,commandbits&1<<i);
+    //cycle clock
+    digitalWrite(SPICLOCK,HIGH);
+    digitalWrite(SPICLOCK,LOW);    
+  }
+
+  digitalWrite(SPICLOCK,HIGH);    //ignores 2 null bits
+  digitalWrite(SPICLOCK,LOW);
+  digitalWrite(SPICLOCK,HIGH);  
+  digitalWrite(SPICLOCK,LOW);
+
+  //read bits from adc
+  for (int i=11; i>=0; i--){
+    adcvalue+=digitalRead(DATAIN)<<i;
+    //cycle clock
+    digitalWrite(SPICLOCK,HIGH);
+    digitalWrite(SPICLOCK,LOW);
+  }
+  digitalWrite(SELPIN, HIGH); //turn off device
+  return adcvalue;
+}
+
+
+void loop() { 
+ readvalue = read_adc(1); 
+ Serial.println(readvalue,DEC); 
+ readvalue = read_adc(2); 
+ Serial.println(readvalue,DEC); 
+ Serial.println(" "); 
+ delay(250); 
+} 
+
+
+// code to set up the clock from http://forum.arduino.cc/index.php/topic,65434.0.html  
+
+const int freqOutputPin = 3;  
+const int ocr2aval  = 3; 
+
+// These are not needed to generate the code.  They are simply to remind the user
+// what the frequency is.  Note that changing the value of "prescale" here does
+// not affect the counter operation.  It's just for the printout vlaue
+const int prescale  = 1;
+const float period    = 2.0 * prescale * (ocr2aval+1) / (F_CPU/1.0e6);
+const float freq      = 1.0e6 / period;
+
+void setup()
+{
+   pinMode(freqOutputPin, OUTPUT);
+   Serial.begin(9600);
+
+   // Toggle OC2B on "compare match".
+   // Normal count mode with OCRA as "top"
+   TCCR2A = ((1 << WGM21) | (1 << COM2B0));
+
+   // Prescale divider value = 1
+   // If you want to change the prescale value, look at the ATmega
+   // data sheet for the appropriate values of CS22:0
+   //
+   TCCR2B = (1 << CS20);
+
+   // Not really needed here, since TIMSK is initialized
+   // to zero, but for general use, it's probably not
+   // a bad idea to make sure timer 2 interrupts are
+   // disabled.
+   TIMSK2 = 0;
+ 
+   // This is the "top" value at which the counter will reset
+   OCR2A = ocr2aval;
+
+   Serial.print("Period    = ");
+   Serial.print(period); 
+   Serial.println(" microseconds");
+   Serial.print("Frequency = ");
+   Serial.print(freq); 
+   Serial.println(" Hz");
+}
+
+// Timer 2 Output is directly connected to the designated OCR pin, so
+// program intervention is not required to do anything with it.
+//
+void loop(){
+   //
+   // Do just about anything you want to here, but if you mess
+   // with Timer 2, you may affect the output on its OCR pin.
+   //
+}
