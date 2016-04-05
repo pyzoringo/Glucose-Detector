@@ -25,3 +25,6 @@ In this way, I don't have to mess with accessing ATMEGA chip.
 
 3/21/2016  
 Received LCD screen module from adafruit, unfortunately, I need to solder it up myself.  
+
+4/05/2016  
+Found some code related to external ADC. Need to be modified later. Detailed info in externalADC.  
