@@ -28,3 +28,7 @@ Received LCD screen module from adafruit, unfortunately, I need to solder it up 
 
 4/05/2016  
 Found some code related to external ADC. Need to be modified later. Detailed info in externalADC.  
+Arduino code speed test:  
+testDigitalWriteAndReadSpeed.ino show 20 digitalWrite + 1 micros() = 133us(+7/-5)  
+testMicrosSpeed.ino show 20 micros() = 57us(+11/-1)  
+So, 1 digitalWrite ~ 6.5us unacceptable for this project.
